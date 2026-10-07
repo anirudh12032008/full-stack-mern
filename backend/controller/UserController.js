@@ -1,9 +1,19 @@
 import User from "../models/User.js";
 import Location from "../models/Location.js";
 
+const ALLOWED_ROLES = ["supervisor", "driver", "caretaker"];
+
 export const createUser = async (req, res) => {
   try {
     const { name, mobile, email, role,locations,zone  } = req.body;
+
+    if (!name || !mobile || !email) {
+      return res.status(400).json({ message: "Name, mobile and email are required" });
+    }
+
+    if (!ALLOWED_ROLES.includes(role)) {
+      return res.status(400).json({ message: "Invalid role" });
+    }
 
     const existingUser = await User.findOne({
       $or: [{ mobile }, { email }],
@@ -103,6 +113,13 @@ export const deleteUser = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "User not found"
+      });
+    }
+
+    if (user.role === "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Admin accounts can't be deleted"
       });
     }
 
