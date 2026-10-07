@@ -56,6 +56,12 @@ const userSchema = new mongoose.Schema(
   select:false
 },
 
+  otpAttempts: {
+    type: Number,
+    default: 0,
+    select: false,
+  },
+
   isVerified: {
     type: Boolean,
     default: false,
