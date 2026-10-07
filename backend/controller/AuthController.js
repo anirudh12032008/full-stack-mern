@@ -8,6 +8,17 @@ dotenv.config();
 
 const MAX_OTP_TRIES = 5;
 
+const SENT_MESSAGE = "If that email is registered, an OTP has been sent";
+
+const escapeHtml = (text = "") =>
+  String(text).replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  }[c]));
+
 const hashOtp = (otp) =>
   crypto
     .createHmac("sha256", process.env.OTP_SECRET || process.env.JWT_SECRET)
@@ -45,9 +56,9 @@ const user = await User.findOne({email}).select("+otp +otpCreatedAt");
 
 if(!user){
 
-return res.status(404).json({
-success:false,
-message:"User not found"
+return res.status(200).json({
+success:true,
+message:SENT_MESSAGE
 });
 
 }
@@ -76,7 +87,7 @@ return res.status(200).json({
 success:true,
 
 message:
-"OTP already sent. Please use previous OTP",
+SENT_MESSAGE,
 
 });
 
@@ -116,7 +127,7 @@ await axios.post(
 
 sender:{
 name:"CleanTrack",
-email:"jyotipatewar2004@gmail.com"
+email:process.env.SENDER_EMAIL
 },
 
 
@@ -137,7 +148,7 @@ htmlContent:`
 
 <h2>CleanTrack</h2>
 
-<p>Hello <b>${user.name}</b></p>
+<p>Hello <b>${escapeHtml(user.name)}</b></p>
 
 <p>Your OTP is:</p>
 
@@ -179,7 +190,7 @@ return res.status(200).json({
 
 success:true,
 
-message:"OTP Sent Successfully"
+message:SENT_MESSAGE
 
 });
 
@@ -198,7 +209,7 @@ return res.status(500).json({
 
 success:false,
 
-message:error.message
+message: "Server error"
 
 });
 
@@ -226,9 +237,9 @@ export const verifyOtp = async (req, res) => {
     const user = await User.findOne({ email }).select("+otp +otpCreatedAt +otpAttempts");
 
     if (!user) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
-        message: "User not found",
+        message: "Invalid OTP",
       });
     }
 
@@ -309,7 +320,7 @@ await user.save();
 
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };    
