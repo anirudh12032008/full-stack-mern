@@ -4,7 +4,8 @@ import Location from "../models/Location.js";
 
 export const createEmergencyRequest = async (req, res) => {
   try {
-    const { requestedBy, location, priority } = req.body;
+    const { location, priority } = req.body;
+    const requestedBy = req.user.id;
 
     if (!location) {
       return res.status(400).json({

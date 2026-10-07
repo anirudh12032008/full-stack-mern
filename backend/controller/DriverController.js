@@ -56,8 +56,8 @@ export const markAsArrived = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const request = await EmergencyRequest.findByIdAndUpdate(
-      id,
+    const request = await EmergencyRequest.findOneAndUpdate(
+      { _id: id, status: "Scheduled" },
       {
         status: "Arrived",
         arrivedAt: new Date(), // Arrival date & time save
@@ -70,7 +70,7 @@ export const markAsArrived = async (req, res) => {
     if (!request) {
       return res.status(404).json({
         success: false,
-        message: "Request not found",
+        message: "Scheduled request not found",
       });
     }
 
