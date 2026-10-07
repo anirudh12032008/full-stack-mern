@@ -122,11 +122,18 @@ export const getSingleLocation = async (req, res) => {
 export const updateLocation = async (req, res) => {
   try {
     const { id } = req.params;
-    const { locationName } = req.body;
+    const { locationName, zone, latitude, longitude } = req.body;
+
+    if (typeof locationName !== "string" || !locationName.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Location name is required",
+      });
+    }
 
     const existingLocation = await Location.findOne({
       locationName: locationName.trim(),
-      _id: { $ne: id }, // current record ko ignore karega
+      _id: { $ne: id },
     });
 
     if (existingLocation) {
@@ -138,9 +145,16 @@ export const updateLocation = async (req, res) => {
 
     const updated = await Location.findByIdAndUpdate(
       id,
-      req.body,
-      { new: true }
+      { locationName: locationName.trim(), zone, latitude, longitude },
+      { new: true, runValidators: true }
     );
+
+    if (!updated) {
+      return res.status(404).json({
+        success: false,
+        message: "Location not found",
+      });
+    }
 
     res.status(200).json({
       success: true,
