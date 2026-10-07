@@ -58,7 +58,6 @@ export default function DriverDashboard() {
 
       const res = await axios.get(Api.get_Todays_Task);
 
-      console.log("TASK RESPONSE =>", res.data);
 
       if (res.data.success) {
 

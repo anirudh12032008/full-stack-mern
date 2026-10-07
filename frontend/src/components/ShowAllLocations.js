@@ -82,7 +82,6 @@ export default function ShowAllLocations() {
           Api.get_All_Caretakers
         );
 
-      console.log(res.data)
       setCaretakers(
         res.data.data
       );

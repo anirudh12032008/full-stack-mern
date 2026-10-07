@@ -49,7 +49,6 @@ export default function DriverRoute() {
       );
 
 
-      console.log("ARRIVED RESPONSE", res.data);
 
 
       setTask(prev => ({
@@ -157,11 +156,6 @@ export default function DriverRoute() {
       Number(task.location.longitude)
     );
 
-    console.log(
-      "Distance:",
-      distance,
-      "meters"
-    );
 
     setDistance(distance);
     setIsNearLocation(distance <= 100);
