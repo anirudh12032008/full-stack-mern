@@ -2,8 +2,21 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import axios from "axios";
+import crypto from "crypto";
 
 dotenv.config();
+
+const hashOtp = (otp) =>
+  crypto
+    .createHmac("sha256", process.env.OTP_SECRET || process.env.JWT_SECRET)
+    .update(otp)
+    .digest("hex");
+
+const sameOtp = (otp, hash) => {
+  const a = Buffer.from(hashOtp(String(otp)));
+  const b = Buffer.from(hash || "");
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+};
 
 // ======================
 // SEND OTP
@@ -16,7 +29,7 @@ try {
 const { email } = req.body;
 
 
-const user = await User.findOne({email});
+const user = await User.findOne({email}).select("+otp +otpCreatedAt");
 
 
 if(!user){
@@ -73,7 +86,7 @@ Math.random()*900000
 
 
 
-user.otp = otp;
+user.otp = hashOtp(otp);
 
 user.otpCreatedAt = new Date();
 
@@ -194,7 +207,7 @@ export const verifyOtp = async (req, res) => {
 
     const { email, otp } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+otp +otpCreatedAt");
 
     if (!user) {
       return res.status(404).json({
@@ -203,7 +216,7 @@ export const verifyOtp = async (req, res) => {
       });
     }
 
-   if(user.otp !== otp){
+   if(!user.otp || !sameOtp(otp, user.otp)){
 
   return res.status(400).json({
     success:false,
@@ -253,7 +266,12 @@ await user.save();
       token,
       role: user.role,
       id: user._id,
-      user,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
 
   } catch (error) {
