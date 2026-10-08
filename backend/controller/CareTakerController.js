@@ -480,7 +480,9 @@ export const createCaretakerRequest = async(req,res)=>{
 try{
 
 
-const {caretakerId,priority}=req.body;
+const caretakerId = req.user.id;
+
+const {priority}=req.body;
 
 
 

@@ -1,5 +1,5 @@
 import express from "express";
-import { requireRole } from "../middleware/auth.js";
+import { requireRole, selfOrAdmin, validIds } from "../middleware/auth.js";
 
 import {createUser,getAllUsers,deleteUser,} from "../controller/UserController.js";
 
@@ -11,6 +11,6 @@ router.post("/create-user",createUser);
 
 router.get("/all-users",getAllUsers);
 
-router.delete("/delete-user/:id",deleteUser);
+router.delete("/delete-user/:id",validIds("id"),deleteUser);
 
 export default router;
