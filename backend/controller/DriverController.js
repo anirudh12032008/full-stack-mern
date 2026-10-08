@@ -19,7 +19,6 @@ const requests = await EmergencyRequest.find({
 })
 .populate("location")
 .populate("requestedBy", "name mobile role");
-console.log(requests);
 
 const sortedRequests = requests.sort((a, b) => {
 
@@ -44,7 +43,7 @@ const sortedRequests = requests.sort((a, b) => {
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };
@@ -84,7 +83,7 @@ export const markAsArrived = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };
@@ -129,9 +128,10 @@ data:request
 
 
 }catch(error){
+console.error(error);
 
 res.status(500).json({
-message:error.message
+message: "Server error"
 });
 
 }
@@ -154,9 +154,10 @@ export const getCompletedTasks = async (req, res) => {
       data: tasks,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };

@@ -43,8 +43,9 @@ export const createUser = async (req, res) => {
       user,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
-      message: error.message,
+      message: "Server error",
     });
   }
 };
@@ -65,9 +66,10 @@ export const getAllUsers = async (req,res) => {
     res.status(200).json(users);
 
   } catch (error) {
+    console.error(error);
 
     res.status(500).json({
-      message: "Server Error",
+      message: "Server error",
     });
 
   }
@@ -90,7 +92,7 @@ export const getAllUsers = async (req,res) => {
 //   } catch (error) {
 
 //     res.status(500).json({
-//       message: "Server Error",
+//       message: "Server error",
 //     });
 
 //   }
@@ -103,11 +105,9 @@ export const deleteUser = async (req, res) => {
 
     const { id } = req.params;
 
-    console.log("Delete User ID:", id);
 
     const user = await User.findById(id);
 
-    console.log("User:", user);
 
     if (!user) {
       return res.status(404).json({
@@ -149,7 +149,7 @@ export const deleteUser = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message
+      message: "Server error"
     });
 
   }

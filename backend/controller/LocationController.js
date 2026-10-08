@@ -34,7 +34,7 @@ export const createLocation = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };
@@ -45,8 +45,9 @@ export const getAllLocations = async (req, res) => {
 
     res.status(200).json(locations);
   } catch (error) {
+    console.error(error);
     res.status(500).json({
-      message: error.message,
+      message: "Server error",
     });
   }
 };
@@ -60,18 +61,15 @@ export const getLocationsByZone = async (req, res) => {
   try {
     const { zone } = req.params;
 
-    console.log("Zone:", zone);
 
     const supervisor = await User.findOne({
       role: "supervisor",
       zone,
     });
 
-    console.log("Supervisor:", supervisor);
 
 const locations = await Location.find({ zone })
   .populate("caretaker", "name mobile");
-    console.log("Locations:", locations);
 
     res.status(200).json({
       success: true,
@@ -83,7 +81,7 @@ const locations = await Location.find({ zone })
     console.log(error);
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };
@@ -109,9 +107,10 @@ export const getSingleLocation = async (req, res) => {
       location,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };
@@ -163,9 +162,10 @@ export const updateLocation = async (req, res) => {
     });
 
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };
@@ -184,9 +184,10 @@ export const deleteLocation = async (req, res) => {
       message: "Location deleted successfully",
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };

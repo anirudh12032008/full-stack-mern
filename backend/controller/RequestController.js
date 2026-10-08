@@ -100,7 +100,7 @@ export const createEmergencyRequest = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };
@@ -133,7 +133,6 @@ export const getAllEmgReq = async (req, res) => {
       .sort({
         createdAt: -1,
       });
-console.log(emgReqs)
   const sorted = emgReqs.sort((a, b) => {
 
   if (a.isOverdue && !b.isOverdue)
@@ -158,7 +157,7 @@ console.log(emgReqs)
 
     res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: "Server error",
     });
 
   }
@@ -186,9 +185,10 @@ export const updateScheduleOrder = async (req, res) => {
       data: request,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };
@@ -207,7 +207,8 @@ export const getMyEmergencyRequests = async (req, res) => {
 
     res.status(200).json(requests);
   } catch (error) {
-    res.status(500).json(error);
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -219,30 +220,25 @@ export const getZoneCaretakerRequests = async(req,res)=>{
 
 try{
 
-console.log("API HIT");
 
 const {supervisorId}=req.params;
 
-console.log("SUP ID:", supervisorId);
 
 
 const supervisor = await User.findById(supervisorId);
 
-console.log("SUPERVISOR:", supervisor);
 
 
 const locations = await Location.find({
     zone: supervisor.zone
 });
 
-console.log("LOCATIONS:", locations);
 
 
 const locationIds = locations.map(
     loc => loc._id
 );
 
-console.log("LOCATION IDS:", locationIds);
 
 
 
@@ -253,7 +249,6 @@ const caretakers = await User.find({
     }
 });
 
-console.log("CARETAKERS:", caretakers);
 
 
 
@@ -271,7 +266,6 @@ const requests = await EmergencyRequest.find({
  createdAt:-1
 });
 
-console.log("REQUESTS:", requests);
 
 
 
@@ -289,7 +283,7 @@ console.log("ERROR:",error);
 
 res.status(500).json({
 success:false,
-message:error.message
+message: "Server error"
 });
 
 }
