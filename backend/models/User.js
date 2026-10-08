@@ -45,11 +45,15 @@ const userSchema = new mongoose.Schema(
        default:null
     },
 
-  otp: String,
+  otp: {
+    type: String,
+    select: false,
+  },
 
   otpCreatedAt:{
   type:Date,
-  default:null
+  default:null,
+  select:false
 },
 
   isVerified: {
