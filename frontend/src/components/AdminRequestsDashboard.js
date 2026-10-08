@@ -59,7 +59,6 @@ function AdminRequestsDashboard() {
       setLoading(true);
       const res = await axios.get(Api.get_All_Emg_Req);
 
-      console.log("RAW RESPONSE:", res.data);
 
       const data =
         res.data?.data ||
@@ -91,7 +90,6 @@ function AdminRequestsDashboard() {
       const res = await axios.get(
         Api.get_All_Caretaker_Reqs
       );
-      console.log("CARETAKER RESPONSE =>", res.data);
 
       const data =
         res.data?.data ||
@@ -128,10 +126,6 @@ function AdminRequestsDashboard() {
   ];
 
 
-  console.log(
-    "ALL REQUESTS =>",
-    allRequests
-  );
   // ================= FINAL SORT =================
   const filteredRequests = allRequests.filter((req) => {
 

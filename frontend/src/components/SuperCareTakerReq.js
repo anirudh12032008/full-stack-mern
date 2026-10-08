@@ -27,7 +27,6 @@ export default function CaretakerRequests() {
       );
 
 
-      console.log("API RESPONSE =>", res.data);
 
 
 
@@ -39,10 +38,6 @@ export default function CaretakerRequests() {
 
 
 
-      console.log(
-        "ONLY CARETAKER REQUESTS =>",
-        caretakerRequests
-      );
 
 
 

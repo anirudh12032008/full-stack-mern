@@ -45,7 +45,6 @@ function AssignLocation() {
         zone: selectedZone,
       });
 
-      console.log(res.data);
 
       toast.success(
         `Zone assigned successfully. ${res.data.locationsCount} locations assigned.`

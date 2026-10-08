@@ -24,7 +24,6 @@ export default function SupervisorDashboard() {
       const res = await axios.get(
         `${Api.get_Supervisor_Locations}/${supervisorId}`
       );
-      console.log(res.data)
       setLocations(res.data);
     } catch (err) {
       console.log(err);
@@ -43,7 +42,6 @@ export default function SupervisorDashboard() {
         `${Api.get_My_Emg_Req}/${supervisorId}`
       );
 
-      console.log("MY REQUEST RESPONSE =>", res.data);
 
       const data = res.data?.data || res.data || [];
 
@@ -58,7 +56,6 @@ export default function SupervisorDashboard() {
       });
 
 
-      console.log("ONLY SUPERVISOR REQUESTS =>", filtered);
 
 
       setMyRequests(filtered);
@@ -184,9 +181,6 @@ export default function SupervisorDashboard() {
   });
 
 
-  console.log(localStorage.getItem("token"));
-  console.log(localStorage.getItem("role"));
-  console.log(localStorage.getItem("id"));
 
   const overdueRequests = sortedRequests.filter(
     (req) =>
