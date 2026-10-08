@@ -6,6 +6,8 @@ import crypto from "crypto";
 
 dotenv.config();
 
+const MAX_OTP_TRIES = 5;
+
 const hashOtp = (otp) =>
   crypto
     .createHmac("sha256", process.env.OTP_SECRET || process.env.JWT_SECRET)
@@ -78,15 +80,13 @@ message:
 // ================= CREATE NEW OTP =================
 
 
-const otp =
-Math.floor(
-100000 +
-Math.random()*900000
-).toString();
+const otp = crypto.randomInt(100000, 1000000).toString();
 
 
 
 user.otp = hashOtp(otp);
+
+user.otpAttempts = 0;
 
 user.otpCreatedAt = new Date();
 
@@ -207,7 +207,7 @@ export const verifyOtp = async (req, res) => {
 
     const { email, otp } = req.body;
 
-    const user = await User.findOne({ email }).select("+otp +otpCreatedAt");
+    const user = await User.findOne({ email }).select("+otp +otpCreatedAt +otpAttempts");
 
     if (!user) {
       return res.status(404).json({
@@ -217,6 +217,18 @@ export const verifyOtp = async (req, res) => {
     }
 
    if(!user.otp || !sameOtp(otp, user.otp)){
+
+  if(user.otp){
+    user.otpAttempts = (user.otpAttempts || 0) + 1;
+
+    if(user.otpAttempts >= MAX_OTP_TRIES){
+      user.otp = "";
+      user.otpCreatedAt = null;
+      user.otpAttempts = 0;
+    }
+
+    await user.save();
+  }
 
   return res.status(400).json({
     success:false,
@@ -246,6 +258,7 @@ if(diff > 10){
 user.isVerified = true;
 user.otp = "";
 user.otpCreatedAt = null;
+user.otpAttempts = 0;
 
 await user.save();
 
@@ -256,7 +269,7 @@ await user.save();
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "30d",
+        expiresIn: "12h",
       }
     );
 
