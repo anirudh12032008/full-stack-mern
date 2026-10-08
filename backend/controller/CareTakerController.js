@@ -2,6 +2,8 @@ import User from "../models/User.js";
 import Location from "../models/Location.js";
 import EmergencyRequest from "../models/EmergencyRequest.js";
 
+const STATUSES = ["Pending","Scheduled","Arrived","Completed"];
+
 
 export const assignHostelToCaretaker = async(req,res)=>{
 
@@ -165,7 +167,7 @@ const filter = {location: hostelId};
 
 
 
-if(req.query.status)
+if(STATUSES.includes(req.query.status))
 {
 filter.status=req.query.status;
 }

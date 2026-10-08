@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 import { authenticate } from "./middleware/auth.js";
+import { sanitizeBody } from "./middleware/sanitize.js";
 import { conn } from "./conn/conn.js";
 import RequestRoutes from "./routes/RequestRoutes.js";
 import AuthRoutes from "./routes/AuthRoutes.js";
@@ -20,6 +21,7 @@ app.set("trust proxy", 1);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(sanitizeBody);
 app.use(cors());
 
 

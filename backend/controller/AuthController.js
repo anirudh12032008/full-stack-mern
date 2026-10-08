@@ -30,6 +30,15 @@ try {
 
 const { email } = req.body;
 
+if(typeof email !== "string"){
+
+return res.status(400).json({
+success:false,
+message:"Email is required"
+});
+
+}
+
 
 const user = await User.findOne({email}).select("+otp +otpCreatedAt");
 
@@ -206,6 +215,13 @@ export const verifyOtp = async (req, res) => {
   try {
 
     const { email, otp } = req.body;
+
+    if (typeof email !== "string" || typeof otp !== "string") {
+      return res.status(400).json({
+        success: false,
+        message: "Email and OTP are required",
+      });
+    }
 
     const user = await User.findOne({ email }).select("+otp +otpCreatedAt +otpAttempts");
 
